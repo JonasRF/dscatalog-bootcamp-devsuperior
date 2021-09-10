@@ -18,8 +18,6 @@ public class Rule implements Serializable{
 	private Long id;
 	private String authority;
 	
-	
-	
 	public Rule() {
 	}
 
@@ -69,6 +67,4 @@ public class Rule implements Serializable{
 			return false;
 		return true;
 	}
-	
-	
 }
