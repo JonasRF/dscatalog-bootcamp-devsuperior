@@ -36,7 +36,5 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 		protected AuthenticationManager authenticationManager() throws Exception {
 			return super.authenticationManager();
 		}
-		
-		
 	}
 
