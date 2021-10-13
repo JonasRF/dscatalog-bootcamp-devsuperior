@@ -9,7 +9,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "tb_rule")
+@Table(name = "tb_role")
 public class Rule implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
