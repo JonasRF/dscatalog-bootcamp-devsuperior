@@ -86,3 +86,143 @@ Exemplo 2: banco Postgres rodando na porta 5432 com base de dados "minha_base" e
 ```
 docker run -p 5433:5432 --name meu-container-pg12 -e POSTGRES_PASSWORD=1234567 -e POSTGRES_DB=minha_base postgres:12-alpine
 ```
+## Manutenção básica
+Acessar o terminal de um container em execução
+```
+docker attach <id>
+```
+Sair do container sem pará-lo
+```
+CTRL + P + Q
+```
+Acompanhar os logs do container (tail)
+```
+docker logs [-f] <id>
+```
+Inspecionar o tamanho em disco
+```
+docker ps --size
+
+docker system df
+```
+Parar um container
+```
+docker stop <id>
+```
+Iniciar um container
+```
+docker start <id>
+```
+Deletar um container
+```
+docker rm <id>
+```
+Deletar uma imagem
+```
+docker rmi <id>
+```
+
+## Criação da imagem Docker: arquivo Dockerfile
+- Dockerfile é um arquivo de texto plano com instruções de como criar a imagem
+
+#### COMANDOS MAIS COMUNS
+- FROM
+- EXPOSE
+- ADD
+- RUN (Tempo de build. Cada RUN cria uma nova camada na imagem. Use && para encadear vários RUN sem criar camada para cada.)
+- VOLUME
+- ENTRYPOINT (Tempo de executação)
+- CMD (Tempo de executação)
+
+#### Comando para criar a imagem
+```
+docker build -t imagem:tag .
+```
+
+### Exemplo 1: Ubuntu, escreve Hello World
+```
+FROM ubuntu:20.04
+CMD ["echo", "Hello World"]
+```
+### Exemplo 2: Ubuntu, bash rodando (gere o container com -it)
+```
+FROM ubuntu:20.04
+CMD ["bash"]
+```
+### Exemplo 3: Ubuntu, ping, bash rodando (gere o container com -it)
+```
+FROM ubuntu:20.04
+RUN apt-get update \
+ && apt-get install -y iputils-ping
+CMD ["bash"]
+```
+### Exemplo 4: Ubuntu, Curl, AWS CLI, Ping, Vim, SSH, pasta compartilhada: tmp, bash rodando
+```
+FROM ubuntu:20.04
+
+RUN apt-get update \
+  && apt-get install -y curl unzip
+
+RUN curl https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip -o awscliv2.zip \
+  && unzip awscliv2.zip \
+  && ./aws/install \
+  && rm -rf aws awscliv2.zip
+
+RUN apt-get install -y iputils-ping \
+  && apt-get install -y vim \
+  && apt-get install -y openssh-server
+
+VOLUME /tmp
+
+CMD ["bash"]
+```
+### Exemplo 5: App Java web (gerar container: docker run -d -p 80:8080 <imagem:tag>)
+```
+FROM openjdk:11
+VOLUME /tmp
+EXPOSE 8080
+ADD ./target/nome.jar nome.jar
+ENTRYPOINT ["java","-jar","/nome.jar"]
+```
+
+#### Volumes
+Informações detalhadas do container
+```
+docker inspect <id>
+```
+Localização no Windows: https://stackoverflow.com/questions/43181654/locating-data-volumes-in-docker-desktop-windows
+
+Listar volumes
+```
+docker volume ls
+```
+Remover volume
+```
+docker rm -v <container-id>
+
+docker volume rm <volume-name>
+```
+
+## Salvando imagem no Docker Hub
+- No Docker Hub: Create Repository
+
+Criar tag para nossa imagem com usuário do Docker Hub:
+```
+docker tag <imagem:tag> <usuario/imagem:tag>
+```
+Logar no Docker Hub
+```
+docker login docker.io
+```
+Enviar a imagem para o Docker Hub
+```
+docker push usuario/imagem:tag
+```
+Baixar a imagem do Docker Hub
+```
+docker pull usuario/imagem:tag
+```
+Listar imagens de um usuário
+```
+docker search <usuario>
+```
