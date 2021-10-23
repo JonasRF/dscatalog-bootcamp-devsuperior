@@ -226,3 +226,119 @@ Listar imagens de um usuário
 ```
 docker search <usuario>
 ```
+## Criar conta na Amazon AWS
+- Criar conta 
+  - Precisa de cartão de crédito internacional ($1)
+- Criar usuário IAM
+  - Access Key
+  - Secret Access Key
+
+## Criar instância EC2
+- Criar instância EC2
+  - AWS -> EC2 -> Executar instância -> Ubuntu Server 20.04
+  - t2 micro -> Next -> Next -> Next -> Next
+  - Baixar key pair
+  - Liberar HTTP na porta 80
+
+## Acessar instância EC2 via SSH e instalar Docker
+- Logar no AWS CLI
+  - No terminal: aws configure
+    - Access key id: (sua chave)
+    - Secret access key: (seu secret)
+    - Default region name: (sua regiao)
+    - Default output format: json
+- Conectar à instância EC2 com SSH
+  - chmod 400 arquivo.pem
+  - ssh -i "arquivo.pem" ec2-user@...
+- Instalar Docker na instância EC2: https://docs.docker.com/engine/install/ubuntu
+
+## Criar instância do Postgres no RDS
+- AWS -> RDS -> Nova instância -> Postgres
+- Standard create
+- Free tier
+- Publicly accessible
+- Database name: (especificar)
+
+## Preparar o banco com pgAdmin
+- Criar server no pgAdmin
+- Rodar script DDL
+- Rodar seed
+
+## Passos finais de implantação manual na AWS
+- Subir imagem para Docker Hub
+- Criar container do app que se conecta ao banco RDS
+  - Salvar comando RUN
+- Rodar comando RUN na instância EC2
+
+Bootcamp 2.0:
+```
+docker run -p 80:8080 --name dscatalog-aws -e CLIENT_ID=dscatalog -e CLIENT_SECRET=dscatalog123 -e JWT_SECRET=MY-JWT-SECRET -e JWT_DURATION=86400 -e DATABASE_URL= acenelio/dscatalog:v1
+```
+Bootcamp 3.0:
+```
+docker run -p 80:8080 --name dscatalog-aws -e APP_PROFILE=prod -e DB_URL=jdbc:postgresql://HOST:5432/dscatalog -e DB_USERNAME=postgres -e DB_PASSWORD=12345678 acenelio/dscatalog:v1
+```
+
+## CI/CD com Github e Travis
+
+**Atenção**: O .gitignore do back end não pode estar ignorando o mvnw
+
+### Visão geral de CI/CD
+
+https://www.redhat.com/pt-br/topics/devops/what-is-ci-cd
+
+Integração contínua: Build -> Tests -> Merge
+
+Entrega contínua: release no repositório (Git / Container)
+
+Implantação contínua: implantação automática em produção
+
+### Caso 1:
+
+- Login com Github
+- Home -> + My Repositories -> Selecione o repositório Git
+- Repositorio Travis -> Copiar código MD para README
+
+```
+language: java
+jdk:
+  - openjdk11
+before_install:
+  - cd backend
+  - chmod +x mvnw
+```
+
+### Caso 2:
+
+- Repositorio Travis -> More options -> Settings -> (configurar variáveis de ambiente: usuário e senha do Docker Hub)
+
+```
+language: java
+jdk:
+  - openjdk11
+before_install:
+  - cd backend
+  - chmod +x mvnw
+  - ./mvnw clean package
+script:
+  - docker build -t dscatalog:latest .
+before_deploy:
+  echo "$DOCKERHUB_PASSWORD" | docker login --username "$DOCKERHUB_USER" --password-stdin
+deploy:
+  provider: script
+  script:
+    docker tag dscatalog:latest $DOCKERHUB_USER/dscatalog:latest;
+    docker push $DOCKERHUB_USER/dscatalog;
+  on:
+    branch: main
+```
+
+
+## CI/CD com Github Actions e Heroku
+
+### Procfile
+```
+web: java -Dserver.port=$PORT $JAVA_OPTS -Xms256m -Xmx256m -Xss512k -jar target/dscatalog-0.0.1-SNAPSHOT.jar
+```
+
+
