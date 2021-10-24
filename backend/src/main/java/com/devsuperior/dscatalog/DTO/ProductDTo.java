@@ -112,7 +112,4 @@ public class ProductDTo implements Serializable {
 		return categories;
 	}
 
-	public void setCategories(List<CategoryDTo> categories) {
-		this.categories = categories;
-	}
 }
