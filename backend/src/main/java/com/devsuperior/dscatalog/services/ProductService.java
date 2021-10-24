@@ -52,7 +52,7 @@ public class ProductService {
 		Product entity = new Product();
 		copyDtoToEntity(dto, entity);
 		entity = repository.save(entity);
-		return new ProductDTo(entity);
+		return new ProductDTo(entity, entity.getCategories());
 	}
 
 	@Transactional
@@ -61,7 +61,7 @@ public class ProductService {
 			Product entity = repository.getOne(id);
 			copyDtoToEntity(dto, entity);
 			entity = repository.save(entity);
-			return new ProductDTo(entity);
+			return new ProductDTo(entity, entity.getCategories());
 		} catch (EntityNotFoundException e) {
 			throw new ResourceNotFoundException("Id not found" + id);
 		}
@@ -71,7 +71,7 @@ public class ProductService {
 		try {
 			repository.deleteById(id);
 		} catch (EmptyResultDataAccessException e) {
-			throw new DataBaseException("id not found " + id);
+			throw new ResourceNotFoundException("id not found " + id);
 		} catch (DataIntegrityViolationException e) {
 			throw new DataBaseException("Integrity violation");
 		}
