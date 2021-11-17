@@ -24,11 +24,11 @@
 }
 
 .arrow-previous {
-    transform: rotate(-180deg);
+  transform: rotate(-180deg);
 }
 
 .arrow-next {
-    margin-left: 10px;
+  margin-left: 10px;
 }
 
 .arrow-inactive {
