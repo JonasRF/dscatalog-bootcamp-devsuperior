@@ -8,13 +8,13 @@ import { BASE_URL } from "util/requests";
 
 import "./styles.css";
 
-type UrlParms = {
+type UrlParams = {
     productId : string;
 }
 
 const ProductDetails = () => {
 
-  const { productId } = useParams<UrlParms>();
+  const { productId } = useParams<UrlParams>();
 
   const [product, setProduct] = useState<Product>();
 
