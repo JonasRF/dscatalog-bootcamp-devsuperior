@@ -1,8 +1,11 @@
-import './App.css';
+import "./assets/styles/custom.scss";
+import "./App.css";
 
-function App() {
+import Routes from "Routes";
+
+function App()  {
   return (
-    <h1>DSCatalog</h1>
+   <Routes />
   );
 }
 
