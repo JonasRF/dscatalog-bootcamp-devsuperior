@@ -8,9 +8,9 @@ import { SpringPage } from "types/vendor/spring";
 import { AxiosParams } from "types/vendor/axios";
 import { BASE_URL } from "util/requests";
 import axios from "axios";
+import CardLoader from "./CardLoader";
 
 import "./styles.css";
-import CardLoader from "./CardLoader";
 
 const Catalog = () => {
   const [page, setPage] = useState<SpringPage<Product>>();
@@ -27,8 +27,8 @@ const Catalog = () => {
     };
 
     setIsLoading(true);
-    axios(params).then((reponse) => {
-        setPage(reponse.data);
+    axios(params).then((response) => {
+        setPage(response.data);
       })
       .finally(() => {
         setIsLoading(false);
