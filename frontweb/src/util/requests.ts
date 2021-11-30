@@ -82,7 +82,6 @@ axios.interceptors.response.use(function (response) {
   return Promise.reject(error);
 });
 
-
 export const getTokenData = () : TokenData | undefined => {
   
   try{
