@@ -72,7 +72,7 @@ const Login = () => {
             placeholder="Email"
             name="username"
           />
-          <div className="invalid-feedback d-block">{errors.username?.message} </div>
+          <div className="invalid-feedback d-block">{errors.username?.message}</div>
         </div>
         <div className="mb-2">
           <input
