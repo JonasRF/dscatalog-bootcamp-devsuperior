@@ -1,4 +1,4 @@
-import ProductCrudCard from "components/ProductCrudCard";
+import ProductCrudCard from "pages/Admin/Products/ProductCrudCard";
 import { Link } from "react-router-dom";
 
 import './styles.css';
@@ -46,8 +46,6 @@ const List = () => {
             <div className="col-sm-6 col-md-12">
             <div><ProductCrudCard product={product} /></div>
             </div>
-           
-            
             </div>
             </>
     )
