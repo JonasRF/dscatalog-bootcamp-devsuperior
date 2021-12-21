@@ -1,53 +1,47 @@
+import { AxiosRequestConfig } from "axios";
 import ProductCrudCard from "pages/Admin/Products/ProductCrudCard";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { Product } from "types/product";
+import { SpringPage } from "types/vendor/spring";
+import { requestBackend } from "util/requests";
 
-import './styles.css';
+import "./styles.css";
 
 const List = () => {
+  const [page, setPage] = useState<SpringPage<Product>>();
 
-    const product = {
-        
-            "id": 2,
-            "name": "Smart TV",
-            "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-            "price": 2190.0,
-            "imgUrl": "https://raw.githubusercontent.com/devsuperior/dscatalog-resources/master/backend/img/2-big.jpg",
-            "date": "2020-07-14T10:00:00Z",
-            "categories": [
-                {
-                    "id": 1,
-                    "name": "Livros"
-                },
-                {
-                    "id": 3,
-                    "name": "Computadores"
-                }
-            ]
-        }
-    
-    return(
-        <div className="product-crud-container">
-        <div className="product-crud-bar-cotainer">
-            <Link to="/admin/products/create">
-            <button className="btn btn-primary text-white btn-crud-add">ADICIONAR</button>
-            </Link>
-            <div className="base-card product-filter-container">Serach bar</div>
-            </div>
-            <div className="row">
-                <div className="col-sm-6 col-md-12">
-            <div><ProductCrudCard product={product} /></div>
-            </div>
-            <div className="col-sm-6 col-md-12">
-            <div><ProductCrudCard product={product} /></div>
-            </div>
-            <div className="col-sm-6 col-md-12">
-            <div><ProductCrudCard product={product} /></div>
-            </div>
-            <div className="col-sm-6 col-md-12">
-            <div><ProductCrudCard product={product} /></div>
-            </div>
-            </div>
-            </div>
-    )
-}
+  useEffect(() => {
+    const config: AxiosRequestConfig = {
+      method: "GET",
+      url: "products",
+      params: {
+        page: 0,
+        size:50,
+      },
+    };
+    requestBackend(config).then((response) => {
+      setPage(response.data);
+    });
+  }, []);
+  return (
+    <div className="product-crud-container">
+      <div className="product-crud-bar-cotainer">
+        <Link to="/admin/products/create">
+          <button className="btn btn-primary text-white btn-crud-add">
+            ADICIONAR
+          </button>
+        </Link>
+        <div className="base-card product-filter-container">Serach bar</div>
+      </div>
+      <div className="row">
+        {page?.content.map((product) => (
+          <div className="col-sm-6 col-md-12" key={product.id}>
+              <ProductCrudCard product={product} />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
 export default List;
