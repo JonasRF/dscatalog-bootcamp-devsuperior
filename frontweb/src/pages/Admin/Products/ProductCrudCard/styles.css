@@ -58,6 +58,7 @@
 
   .product-crud-card-top-container {
     text-align: center;
+    width: 200px;
     padding: 16px 0;
     border-bottom: 0;
     border-right: 1px solid #e1e1e1;

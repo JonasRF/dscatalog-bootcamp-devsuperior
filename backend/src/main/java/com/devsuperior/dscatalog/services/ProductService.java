@@ -47,7 +47,7 @@ public class ProductService {
 		return new ProductDTo(entity, entity.getCategories());
 	}
 
-	@Transactional(readOnly = true)
+	@Transactional
 	public ProductDTo insert(ProductDTo dto) {
 		Product entity = new Product();
 		copyDtoToEntity(dto, entity);

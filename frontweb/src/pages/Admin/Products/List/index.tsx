@@ -13,11 +13,11 @@ const List = () => {
 
   useEffect(() => {
     const config: AxiosRequestConfig = {
-      method: "GET",
+      method: 'GET',
       url: "products",
       params: {
         page: 0,
-        size:50,
+        size: 60,
       },
     };
     requestBackend(config).then((response) => {
@@ -35,8 +35,8 @@ const List = () => {
         <div className="base-card product-filter-container">Serach bar</div>
       </div>
       <div className="row">
-        {page?.content.map((product) => (
-          <div className="col-sm-6 col-md-12" key={product.id}>
+        {page?.content.map(product => (
+          <div key={product.id} className="col-sm-6 col-md-12">
               <ProductCrudCard product={product} />
           </div>
         ))}
