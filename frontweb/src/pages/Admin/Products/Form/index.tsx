@@ -2,6 +2,7 @@ import { AxiosRequestConfig } from "axios";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useHistory, useParams } from "react-router-dom";
+import Select from "react-select";
 import { Product } from "types/product";
 import { requestBackend } from "util/requests";
 import "./styles.css";
@@ -87,6 +88,16 @@ const isEditing = productId !== 'create';
                   {errors.name?.message}
                 </div>
               </div>
+
+              <div className="margin-button-30">
+                <Select
+                    classNamePrefix="product-crud-select"
+                    isMulti
+                />
+              </div>
+
+
+
               <div className="margin-button-30">
                 <input
                   {...register("price", {
