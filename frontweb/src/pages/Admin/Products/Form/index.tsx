@@ -1,5 +1,6 @@
 import { AxiosRequestConfig } from "axios";
 import { useEffect, useState } from "react";
+import CurrencyInput from "react-currency-input-field";
 import { useForm, Controller } from "react-hook-form";
 import { useHistory, useParams } from "react-router-dom";
 import Select from "react-select";
@@ -52,11 +53,8 @@ const Form = () => {
   const onSubmit = (formData: Product) => {
     const data = {
       ...formData,
-      imgUrl: isEditing
-        ? formData.imgUrl
-        : "https://raw.githubusercontent.com/devsuperior/dscatalog-resources/master/backend/img/1-big.jpg",
-      categories: isEditing ? formData.categories : [{ id: 1, name: "" }],
-    };
+      price: String(formData.price).replace(',','.'),
+    }
 
     const config: AxiosRequestConfig = {
       method: isEditing ? "PUT" : "POST",
@@ -112,25 +110,57 @@ const Form = () => {
                   />
                   )}
                   />
+                  {errors.categories && (
+                     <div className="invalid-feedback d-block">
+                     {errors.name?.message}
+                   </div>
+                  )}
               </div>
 
               <div className="margin-button-30">
-                <input
-                  {...register("price", {
-                    required: "Campo obrigatório",
-                  })}
-                  type="text"
-                  className={`form-control base-input ${
-                    errors.price ? "is-invalid" : ""
-                  }`}
+              <Controller 
+                name="price"
+                rules={{required: 'Campo obrigatório'}}
+                control={control}
+                render={({field}) => (
+                  <CurrencyInput 
                   placeholder="Preço"
-                  name="price"
-                />
+                  className={`form-control base-input ${
+                    errors.name ? 'is-invalid' : ''
+                  }`}
+                  disableGroupSeparators={true}
+                  value={field.value}
+                  onValueChange={field.onChange}
+                  />
+                )}
+              />
                 <div className="invalid-feedback d-block">
                   {errors.price?.message}
                 </div>
               </div>
+
+              <div className="margin-button-30">
+                <input
+                  {...register("imgUrl",  {
+                    required: "Campo obrigatório",
+                    pattern: {
+                      value: /^(https?|chrome):\/\/[^\s$.?#].[^\s]*$/gm,
+                      message: 'Essa URl não é inválida'
+                    }
+                  })}
+                  type="text"
+                  className={`form-control base-input ${
+                    errors.name ? "is-invalid" : ""
+                  }`}
+                  placeholder="URL da imagem do prodduto"
+                  name="imgURL"
+                />
+                <div className="invalid-feedback d-block">
+                  {errors.imgUrl?.message}
+                </div>
+              </div>
             </div>
+           
             <div className="col-lg-6">
               <div>
                 <textarea
