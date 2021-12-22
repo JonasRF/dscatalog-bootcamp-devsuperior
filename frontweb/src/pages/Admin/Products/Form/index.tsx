@@ -1,57 +1,64 @@
 import { AxiosRequestConfig } from "axios";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useHistory, useParams } from "react-router-dom";
 import Select from "react-select";
+import { Category } from "types/category";
 import { Product } from "types/product";
 import { requestBackend } from "util/requests";
 import "./styles.css";
 
 type UrlParams = {
   productId: string;
-}
+};
 
 const Form = () => {
+  const { productId } = useParams<UrlParams>();
 
-const { productId } = useParams<UrlParams>();
-
-const isEditing = productId !== 'create';
+  const isEditing = productId !== "create";
 
   const history = useHistory();
+
+  const [selectCategories, setSelectCAtegories] = useState<Category[]>([]);
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-    setValue
+    setValue,
   } = useForm<Product>();
 
   useEffect(() => {
-    if(isEditing){
-      requestBackend({ url: `/products/${productId}`})
-      .then((response) => {
+    requestBackend({ url: "/categories" }).then((response) => {
+      setSelectCAtegories(response.data.content);
+    });
+  });
 
+  useEffect(() => {
+    if (isEditing) {
+      requestBackend({ url: `/products/${productId}` }).then((response) => {
         const product = response.data as Product;
 
-        setValue('name', product.name);
-        setValue('price', product.price);
-        setValue('description', product.description);
-        setValue('imgUrl', product.imgUrl);
-        setValue('categories', product.categories);
-      })
+        setValue("name", product.name);
+        setValue("price", product.price);
+        setValue("description", product.description);
+        setValue("imgUrl", product.imgUrl);
+        setValue("categories", product.categories);
+      });
     }
-  }, [isEditing, productId, setValue])
+  }, [isEditing, productId, setValue]);
 
   const onSubmit = (formData: Product) => {
     const data = {
       ...formData,
-      imgUrl:     isEditing ? formData.imgUrl :
-        "https://raw.githubusercontent.com/devsuperior/dscatalog-resources/master/backend/img/1-big.jpg",
+      imgUrl: isEditing
+        ? formData.imgUrl
+        : "https://raw.githubusercontent.com/devsuperior/dscatalog-resources/master/backend/img/1-big.jpg",
       categories: isEditing ? formData.categories : [{ id: 1, name: "" }],
     };
 
     const config: AxiosRequestConfig = {
-      method: isEditing ? 'PUT' : 'POST',
+      method: isEditing ? "PUT" : "POST",
       url: isEditing ? `/products/${productId}` : "/products",
       data,
       withCredentials: true,
@@ -91,12 +98,13 @@ const isEditing = productId !== 'create';
 
               <div className="margin-button-30">
                 <Select
-                    classNamePrefix="product-crud-select"
-                    isMulti
+                  options={selectCategories}
+                  classNamePrefix="product-crud-select"
+                  isMulti
+                  getOptionLabel={(category: Category) => category.name}
+                  getOptionValue={(category: Category) => String(category.id)}
                 />
               </div>
-
-
 
               <div className="margin-button-30">
                 <input
