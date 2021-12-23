@@ -1,5 +1,6 @@
 import { AxiosRequestConfig } from "axios";
 import Pagination from "components/Pagination";
+import ProductFilter from "components/ProductFilter";
 import ProductCrudCard from "pages/Admin/Products/ProductCrudCard";
 import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
@@ -52,7 +53,7 @@ const List = () => {
             ADICIONAR
           </button>
         </Link>
-        <div className="base-card product-filter-container">Serach bar</div>
+        <ProductFilter />
       </div>
       <div className="row">
         {page?.content.map((product) => (
@@ -64,8 +65,7 @@ const List = () => {
       <Pagination pageCount={(page) ? page.totalPages : 0}
       range={3}
       onChange={handlePageChange}
-      />
-     
+      /> 
     </div>
   );
 };
