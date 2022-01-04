@@ -61,7 +61,7 @@ public class ProductService {
 			Product entity = repository.getOne(id);
 			copyDtoToEntity(dto, entity);
 			entity = repository.save(entity);
-			return new ProductDTo(entity, entity.getCategories());
+			return new ProductDTo(entity);
 		} catch (EntityNotFoundException e) {
 			throw new ResourceNotFoundException("Id not found" + id);
 		}
@@ -78,7 +78,7 @@ public class ProductService {
 	}
 
 	private void copyDtoToEntity(ProductDTo dto, Product entity) {
-
+		  
 		entity.setName(dto.getName());
 		entity.setDescription(dto.getDescription());
 		entity.setDate(dto.getDate());

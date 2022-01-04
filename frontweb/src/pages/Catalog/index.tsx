@@ -56,7 +56,7 @@ const getProducts = (pageNamber: number) => {
       <Pagination 
       pageCount={(page) ? page.totalPages : 0}
       range={(page) ? page.size : 0}
-      onChange={getProducts}
+      onChange=
       />
       
       </div>
