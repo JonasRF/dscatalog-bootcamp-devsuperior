@@ -1,8 +1,39 @@
-import './styles.css';
-import 'bootstrap/js/src/collapse.js';
-import { Link, NavLink } from 'react-router-dom';
+import "./styles.css";
+import "bootstrap/js/src/collapse.js";
+import { Link, NavLink } from "react-router-dom";
+import { useEffect, useContext  } from "react";
+import history from "util/history";
+import { AuthContext } from "AuthContext";
+import { getTokenData, isAuthenticated } from "util/auth";
+import { removeAuthData } from "util/storage";
 
 const Navbar = () => {
+
+  const {authContextData, setAuthContextData } = useContext(AuthContext);
+
+  useEffect(() => {
+    if (isAuthenticated()) {
+      setAuthContextData({
+        authenticated: true,
+        tokenData: getTokenData(),
+      });
+    } else {
+      setAuthContextData({
+        authenticated: false,
+        tokenData: getTokenData(),
+      });
+    }
+  }, [setAuthContextData]);
+
+  const handleLogoutClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
+    event.preventDefault();
+    removeAuthData();
+    setAuthContextData({
+      authenticated: false,
+    });
+    history.replace("/");
+  };
+
   return (
     <nav className="navbar navbar-expand-md navbar-dark bg-primary main-nav">
       <div className="container-fluid">
@@ -24,15 +55,34 @@ const Navbar = () => {
         <div className="collapse navbar-collapse" id="dscatalog-navbar">
           <ul className="navbar-nav offset-md-2 main-menu">
             <li>
-              <NavLink to="/" activeClassName="active" exact>HOME </NavLink>
+              <NavLink to="/" activeClassName="active" exact>
+                HOME{" "}
+              </NavLink>
             </li>
             <li>
-              <NavLink to="/products" activeClassName="active">CATÁLOGO </NavLink>
+              <NavLink to="/products" activeClassName="active">
+                CATÁLOGO{" "}
+              </NavLink>
             </li>
             <li>
-            <NavLink to="/admin" activeClassName="active">ADMIN </NavLink>
+              <NavLink to="/admin" activeClassName="active">
+                ADMIN{" "}
+              </NavLink>
             </li>
           </ul>
+        </div>
+
+        <div className="nav-login-logout">
+          {authContextData.authenticated ? (
+            <>
+              <span className="nav-username">{authContextData.tokenData?.user_name}</span>
+              <a href="#logout" onClick={handleLogoutClick}>
+                LOGOUT
+              </a>
+            </>
+          ) : (
+            <Link to="/admin/auth">LOGIN</Link>
+          )}
         </div>
       </div>
     </nav>

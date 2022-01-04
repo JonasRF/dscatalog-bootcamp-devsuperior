@@ -57,10 +57,10 @@ public class ProductServiceTests {
 	
 	@BeforeEach
 	void setUp() throws Exception{
-		existingId = 1L;
+		existingId = 2L;
 		nonExistingId = 1000L;
 		dependentId = 4L;
-		Factory.createProductDTO();
+		productDTo = Factory.createProductDTO();
 		category = Factory.creatCatgory();
 		product = Factory.createproduct();
 		page = new PageImpl<>(List.of(product));
