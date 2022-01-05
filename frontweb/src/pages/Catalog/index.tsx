@@ -2,7 +2,7 @@ import ProductCard from "components/ProductCard";
 import { Product } from "types/product";
 import { Link } from "react-router-dom";
 import Pagination from "components/Pagination";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { SpringPage } from "types/vendor/spring";
 import { requestBackend } from "util/requests";
 import { AxiosRequestConfig } from "axios";
@@ -10,18 +10,34 @@ import CardLoader from "./CardLoader";
 
 import "./styles.css";
 
+type ControlComponentsData = {
+  activePage: number;
+}
+
 const Catalog = () => {
   const [page, setPage] = useState<SpringPage<Product>>();
   const [isLoading, setIsLoading] = useState(false);
 
-const getProducts = (pageNamber: number) => {
+  //Controle de componentes
+  const [ controlComponentesData, setControlComponentsData ] = useState<ControlComponentsData>({
+
+    activePage: 0,
+
+   }
+  );
+
+  const handlePageChange = (pageNamber: number) => {
+    setControlComponentsData({activePage: pageNamber});
+  }
+
+const getProducts = useCallback(() => {
   const params: AxiosRequestConfig = {
     method: "GET",
     url: "products",
     params: {
-      page: pageNamber,
+      page: controlComponentesData.activePage,
       size: 12,
-    },
+    }
   };
 
   setIsLoading(true);
@@ -31,11 +47,11 @@ const getProducts = (pageNamber: number) => {
     .finally(() => {
       setIsLoading(false);
     });
-}
+},[controlComponentesData]);
 
   useEffect(() => {
-    getProducts(0);
-  }, []);
+    getProducts();
+  }, [getProducts]);
 
   return (
     <div className="container my-4 catalog-container">
@@ -56,7 +72,7 @@ const getProducts = (pageNamber: number) => {
       <Pagination 
       pageCount={(page) ? page.totalPages : 0}
       range={(page) ? page.size : 0}
-      onChange=
+      onChange={handlePageChange}
       />
       
       </div>
