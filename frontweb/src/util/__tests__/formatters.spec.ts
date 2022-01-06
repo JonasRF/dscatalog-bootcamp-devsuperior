@@ -1,11 +1,15 @@
 import { formatPrice } from "util/formatters";
 
-test('formatprice should format number pt-BR when given 10.1', () => {
+describe('formatePrice for positive numbers', () => {
 
-    //ACT
-    const result = formatPrice(10.1);
+    test('formatprice should format number pt-BR when given 10.1', () => {
+        const result = formatPrice(10.1);
+        expect(result).toEqual("10,10");
+    });
 
+    test('formatprice should format number pt-BR when given 0.1', () => {
+        const result = formatPrice(0.1);
+        expect(result).toEqual("0,10");
+    });
+})
 
-    //ASSERT
-    expect(result).toEqual("10,10");
-});
