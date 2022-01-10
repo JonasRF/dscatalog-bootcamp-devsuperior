@@ -2,7 +2,13 @@ import { render, screen, waitFor } from "@testing-library/react";
 import { Router } from "react-router-dom";
 import history from "util/history";
 import Catalog from "..";
+import { server } from "./fixtures";
 
+
+beforeAll(() => server.listen());
+afterEach(() => server.resetHandlers());
+  afterAll(() => server.close());
+  
 test('should render Catalog with products', async () => {
 
     render(
@@ -10,12 +16,10 @@ test('should render Catalog with products', async () => {
             <Catalog />
         </Router>
     );
-    screen.debug();
 
     expect(screen.getByText('Catálogo de produtos')).toBeInTheDocument();
 
    await waitFor(() => 
-        expect(screen.getByText('PC Gamer')).toBeInTheDocument()
+        expect(screen.getByText('Macbook Pro')).toBeInTheDocument()
    );
-   screen.debug();
 });
