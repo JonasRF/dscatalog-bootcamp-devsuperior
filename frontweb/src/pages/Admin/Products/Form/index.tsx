@@ -4,6 +4,7 @@ import CurrencyInput from "react-currency-input-field";
 import { useForm, Controller } from "react-hook-form";
 import { useHistory, useParams } from "react-router-dom";
 import Select from "react-select";
+import { toast } from "react-toastify";
 import { Category } from "types/category";
 import { Product } from "types/product";
 import { requestBackend } from "util/requests";
@@ -34,7 +35,7 @@ const Form = () => {
     requestBackend({ url: "/categories" }).then((response) => {
       setSelectCAtegories(response.data.content);
     });
-  });
+  },[]);
 
   useEffect(() => {
     if (isEditing) {
@@ -54,7 +55,7 @@ const Form = () => {
     const data = {
       ...formData,
       price: String(formData.price).replace(',','.'),
-    }
+    };
 
     const config: AxiosRequestConfig = {
       method: isEditing ? "PUT" : "POST",
@@ -63,8 +64,13 @@ const Form = () => {
       withCredentials: true,
     };
 
-    requestBackend(config).then(() => {
+    requestBackend(config)
+    .then(() => {
+      toast.info('Produto cadastrado com sucesso');
       history.push("/admin/products");
+    })
+    .catch(() => {
+      toast.error('Erro ao cadastrar produto');
     });
   };
 
@@ -89,6 +95,7 @@ const Form = () => {
                   }`}
                   placeholder="Nome do produto"
                   name="name"
+                  data-testid="name"
                 />
                 <div className="invalid-feedback d-block">
                   {errors.name?.message}
@@ -96,6 +103,7 @@ const Form = () => {
               </div>
 
               <div className="margin-button-30">
+                <label htmlFor="categories" className="d-none">Categorias</label>
                   <Controller
                   name="categories"
                   rules={{required: true}}
@@ -107,8 +115,10 @@ const Form = () => {
                     isMulti
                     getOptionLabel={(category: Category) => category.name}
                     getOptionValue={(category: Category) => String(category.id)}
+                    inputId="categories"
                   />
                   )}
+                  
                   />
                   {errors.categories && (
                      <div className="invalid-feedback d-block">
@@ -131,6 +141,7 @@ const Form = () => {
                   disableGroupSeparators={true}
                   value={field.value}
                   onValueChange={field.onChange}
+                  data-testid="price"
                   />
                 )}
               />
@@ -153,7 +164,8 @@ const Form = () => {
                     errors.name ? "is-invalid" : ""
                   }`}
                   placeholder="URL da imagem do prodduto"
-                  name="imgURL"
+                  name="imgUrl"
+                  data-testid="imgUrl"
                 />
                 <div className="invalid-feedback d-block">
                   {errors.imgUrl?.message}
@@ -173,6 +185,7 @@ const Form = () => {
                   }`}
                   placeholder="Descrição"
                   name="description"
+                  data-testid="description"
                 />
                 <div className="invalid-feedback d-block">
                   {errors.description?.message}
